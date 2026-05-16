@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Meridian Mortgage — Precision home financing with real-time rates, HECM reverse mortgage, HELOC, and state assistance programs. Get pre-approved in minutes.">
+    <meta name="keywords" content="mortgage calculator, HELOC calculator, reverse mortgage, HECM, home financing, mortgage rates, down payment assistance, first-time homebuyer">
+    <meta name="author" content="Meridian Mortgage">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Meridian Mortgage — Precision Home Financing">
+    <meta property="og:description" content="Calculate your exact monthly payment, explore HELOC and reverse mortgage options, and find state assistance programs.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://meridianmortgage.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Meridian Mortgage — Precision Home Financing">
+    <meta name="twitter:description" content="Calculate your exact monthly payment, explore HELOC and reverse mortgage options.">
+    <title>Meridian Mortgage — Precision Home Financing | Calculate Your Payment Today</title>
+    <link rel="canonical" href="https://meridianmortgage.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0B1120;
+            --bg-secondary: #111B2E;
+            --bg-tertiary: #182540;
+            --bg-elevated: #1E2F4D;
+            --accent: #00A896;
+            --accent-light: #00C9B7;
+            --accent-dark: #008F80;
+            --gold: #C9A84C;
+            --gold-light: #D9BF6A;
+            --gold-dark: #A88B3A;
+            --danger: #E05252;
+            --warning: #E8A838;
+            --text-primary: #EDF2F7;
+            --text-secondary: #8A9BB5;
+            --text-muted: #5A6D87;
+            --border: rgba(0,168,150,0.1);
+            --border-strong: rgba(0,168,150,0.25);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,168,150,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,168,150,0.02) 1px, transparent 1px),
+                linear-gradient(rgba(0,168,150,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,168,150,0.04) 1px, transparent 1px);
+            background-size: 48px 48px, 48px 48px, 48px 240px, 240px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .mouse-glow {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,168,150,0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: left 0.3s ease-out, top 0.3s ease-out;
+            will-change: left, top;
+        }
+        .page-wrap { position: relative; z-index: 1; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(11,17,32,0.7);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        nav.scrolled { background: rgba(11,17,32,0.95); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1.5rem; max-width: 1200px; margin: 0 auto; height: 64px; }
+        .logo { display: flex; align-items: center; gap: 0.625rem; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text-primary); }
+        .logo-mark { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s; }
+        .logo:hover .logo-mark { transform: rotate(-6deg) scale(1.05); }
+        .logo-mark svg { width: 18px; height: 18px; }
+        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-link { padding: 0.5rem 0.875rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius-xs); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+        .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .nav-cta { background: linear-gradient(135deg, var(--gold-dark), var(--gold)) !important; color: #0B1120 !important; font-weight: 600; box-shadow: 0 2px 12px rgba(201,168,76,0.2); }
+        .nav-cta:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important; box-shadow: 0 4px 20px rgba(201,168,76,0.35) !important; transform: translateY(-1px); color: #0B1120 !important; }
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 0.4rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .nav-toggle:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-toggle svg { width: 22px; height: 22px; }
+
+        /* Hero */
+        .hero { padding: 10rem 0 6rem; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(0,168,150,0.07) 0%, transparent 55%); pointer-events: none; animation: hero-glow 8s ease-in-out infinite alternate; }
+        .hero::after { content: ''; position: absolute; bottom: -100px; left: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 55%); pointer-events: none; animation: hero-glow 10s ease-in-out infinite alternate-reverse; }
+        @keyframes hero-glow { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: rgba(0,168,150,0.08); border: 1px solid rgba(0,168,150,0.2); border-radius: 100px; font-size: 0.6875rem; font-weight: 600; color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards; }
+        .hero-badge .pulse-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; position: relative; }
+        .hero-badge .pulse-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid var(--accent); animation: pulse-ring 2s ease-out infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(2.2); opacity: 0; } }
+        .hero h1 { font-size: clamp(2.75rem,6vw,4.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.2s forwards; background: linear-gradient(135deg,var(--text-primary) 30%,var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: clamp(1.0625rem,2vw,1.25rem); color: var(--text-secondary); max-width: 560px; line-height: 1.7; margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards; }
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.5s forwards; }
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 2rem; border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.22,1,0.36,1); letter-spacing: 0.01em; position: relative; overflow: hidden; text-decoration: none; }
+        .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .btn-gold { background: linear-gradient(135deg,var(--gold-dark),var(--gold)); color: #0B1120; box-shadow: 0 4px 20px rgba(201,168,76,0.3); }
+        .btn-gold::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg,transparent,rgba(255,255,255,0.2),transparent 60%); transform: translateX(-100%); transition: transform 0.5s; }
+        .btn-gold:hover::before { transform: translateX(100%); }
+        .btn-gold:hover { box-shadow: 0 8px 32px rgba(201,168,76,0.45); transform: translateY(-2px); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border-strong); }
+        .btn-outline:hover { background: rgba(0,168,150,0.06); border-color: var(--accent); transform: translateY(-1px); }
+        .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; opacity: 0; animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.65s forwards; }
+        .hero-stat { text-align: center; }
+        .hero-stat .num { font-size: 2.25rem; font-weight: 800; color: var(--gold); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+        .hero-stat .desc { font-size: 0.8125rem; color: var(--text-muted); font-weight: 500; margin-top: 0.25rem; }
+        .hero-stat .stat-line { display: block; width: 40px; height: 2px; background: linear-gradient(90deg,transparent,var(--gold),transparent); margin: 0.75rem auto 0; }
+        .hero-visual { position: absolute; right: -2rem; bottom: 2rem; opacity: 0.08; pointer-events: none; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(1deg); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Section common */
+        section { padding: 5rem 0; position: relative; }
+        .section-label { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .section-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+        .section-title { font-size: clamp(1.5rem,3vw,2.25rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 1rem; }
+        .section-desc { font-size: 1.0625rem; color: var(--text-secondary); max-width: 600px; line-height: 1.7; margin-bottom: 3rem; }
+
+        /* Trust bar */
+        .trust-bar { padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(17,27,46,0.5); }
+        .trust-inner { display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+        .trust-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-muted); white-space: nowrap; font-weight: 500; }
+        .trust-item strong { color: var(--text-secondary); font-weight: 600; }
+        .trust-icon { width: 18px; height: 18px; opacity: 0.5; flex-shrink: 0; }
+        .trust-sep { width: 1px; height: 20px; background: var(--border); }
+
+        /* Features grid */
+        .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+        .feature-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,transparent,var(--accent),transparent); opacity: 0; transition: opacity 0.4s; }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-card:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+        .feature-card:hover .feature-icon { transform: scale(1.1) rotate(-4deg); }
+        .feature-icon svg { width: 22px; height: 22px; }
+        .feature-card h3 { font-size: 1.0625rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+        .feature-card p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; }
+
+        /* Rate showcase */
+        .rate-showcase { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2.5rem; position: relative; overflow: hidden; }
+        .rate-showcase::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-dark)); }
+        .rate-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.25rem; margin-bottom: 2rem; }
+        .rate-item { text-align: center; padding: 1rem 0; }
+        .rate-item .rl { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .rate-item .rv { font-size: 2.25rem; font-weight: 800; color: var(--gold); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+        .rate-item .rc { font-size: 0.75rem; font-weight: 600; margin-top: 0.375rem; }
+        .rate-down { color: var(--accent); }
+        .rate-up { color: var(--danger); }
+        .rate-note { text-align: center; font-size: 0.8125rem; color: var(--text-muted); margin-top: 1rem; }
+        .rate-chart-wrap { background: var(--bg-tertiary); border-radius: var(--radius-sm); padding: 1rem 1rem 0.5rem; height: 220px; }
+
+        /* Tools hub */
+        .tools-hub { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .tools-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+        .tool-card { background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden; }
+        .tool-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,var(--accent),var(--gold)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+        .tool-card:hover::before { transform: scaleX(1); }
+        .tool-card:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .tool-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .tool-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+        .tool-card:hover .tool-card-icon { transform: scale(1.1); }
+        .tool-card-icon svg { width: 24px; height: 24px; }
+        .tool-card h3 { font-size: 1.0625rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+        .tool-card p { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6; flex-grow: 1; }
+        .tool-card-arrow { display: flex; align-items: center; gap: 0.375rem; margin-top: 1rem; font-size: 0.8125rem; font-weight: 600; color: var(--accent); transition: gap 0.3s; }
+        .tool-card:hover .tool-card-arrow { gap: 0.625rem; }
+        .tool-card-arrow svg { width: 16px; height: 16px; transition: transform 0.3s; }
+        .tool-card:hover .tool-card-arrow svg { transform: translateX(2px); }
+
+/* Pricing Section */
+        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem}
+        .pricing-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;position:relative;transition:all .3s;display:flex;flex-direction:column}
+        .pricing-card.featured{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 32px rgba(201,168,76,0.15);transform:scale(1.02)}
+        .pricing-card.featured:hover{transform:scale(1.03)}
+        .pricing-card:hover{border-color:var(--border-strong);transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+        .pricing-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#0B1120;font-size:.6875rem;font-weight:700;padding:.25rem 1rem;border-radius:100px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+        .pricing-header{text-align:center;padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+        .pricing-header h3{font-size:1.25rem;font-weight:700;margin-bottom:.5rem}
+        .pricing-price{font-size:2rem;font-weight:800;color:var(--gold);letter-spacing:-0.03em;line-height:1}
+        .pricing-price .pricing-period{font-size:.875rem;font-weight:500;color:var(--text-muted);letter-spacing:0}
+        .pricing-bestfor{font-size:.8125rem;color:var(--text-secondary);margin-top:.5rem}
+        .pricing-features{list-style:none;margin-bottom:2rem;flex-grow:1}
+        .pricing-feature{display:flex;align-items:flex-start;gap:.75rem;padding:.5rem 0;font-size:.875rem;color:var(--text-secondary)}
+        .pricing-feature.muted{opacity:.6}
+        .pricing-feature .check,.pricing-feature .dash{width:18px;height:18px;flex-shrink:0;margin-top:2px}
+        .pricing-note{text-align:center;font-size:.8125rem;color:var(--text-muted);margin-top:2.5rem}
+
+
+        /* How it works */
+        .steps-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; position: relative; }
+        .step-card { text-align: center; padding: 2rem 1.5rem; position: relative; }
+        .step-num { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-tertiary); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.125rem; font-weight: 800; color: var(--accent); margin: 0 auto 1.25rem; transition: all 0.4s; }
+        .step-card:hover .step-num { background: rgba(0,168,150,0.1); border-color: var(--accent); box-shadow: 0 0 20px rgba(0,168,150,0.15); }
+        .step-connector { display: none; position: absolute; top: calc(2rem + 26px); left: calc(16.67% + 40px); right: calc(16.67% + 40px); height: 2px; background: repeating-linear-gradient(90deg,var(--border) 0px,var(--border) 6px,transparent 6px,transparent 12px); }
+        @media (min-width:768px) { .step-connector { display: block; } }
+        .step-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .step-card p { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.65; }
+
+        /* Testimonials */
+        .testimonials { display: grid; grid-template-columns: repeat(auto-fit,minmax(340px,1fr)); gap: 1.5rem; }
+        .testimonial { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; position: relative; transition: border-color 0.3s, transform 0.3s; }
+        .testimonial:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+        .testimonial::before { content: '\201C'; position: absolute; top: -0.5rem; left: 1.5rem; font-size: 4rem; color: rgba(0,168,150,0.12); font-family: Georgia, serif; line-height: 1; }
+        .testimonial-stars { display: flex; gap: 2px; margin-bottom: 0.75rem; }
+        .testimonial-stars svg { width: 14px; height: 14px; fill: var(--gold); }
+        .testimonial-text { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.7; font-style: italic; margin-bottom: 1.25rem; }
+        .testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+        .testimonial-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8125rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+        .testimonial-name { font-size: 0.8125rem; font-weight: 600; }
+        .testimonial-role { font-size: 0.6875rem; color: var(--text-muted); }
+
+        /* CTA */
+        .cta-section { position: relative; overflow: hidden; }
+        .cta-inner { position: relative; z-index: 1; background: var(--bg-secondary); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 3.5rem 3rem; text-align: center; overflow: hidden; }
+        .cta-inner::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 0%,rgba(0,168,150,0.08),transparent 60%),radial-gradient(ellipse at 70% 100%,rgba(201,168,76,0.05),transparent 60%); pointer-events: none; }
+        .cta-inner::after { content: ''; position: absolute; inset: -2px; border-radius: var(--radius); background: conic-gradient(from 0deg,transparent,var(--accent),transparent,var(--gold),transparent); opacity: 0.15; animation: cta-border-spin 8s linear infinite; z-index: -1; }
+        @keyframes cta-border-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .cta-title { font-size: clamp(1.5rem,3vw,2.25rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.75rem; position: relative; }
+        .cta-desc { font-size: 1.0625rem; color: var(--text-secondary); max-width: 480px; margin: 0 auto 2rem; line-height: 1.7; position: relative; }
+        .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+
+        /* Stats bar */
+        .stats-bar { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem 1.5rem; display: grid; grid-template-columns: repeat(4,1fr); gap: 1.5rem; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 1.75rem; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1.2; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.25rem; }
+
+        /* Footer */
+        footer { border-top: 1px solid var(--border); padding: 2.5rem 0; position: relative; z-index: 1; background: var(--bg-primary); }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .footer-links a { font-size: 0.8125rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Back to top */
+        .back-top { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 90; opacity: 0; transform: translateY(10px); transition: all 0.3s; color: var(--text-secondary); }
+        .back-top.visible { opacity: 1; transform: translateY(0); }
+        .back-top:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .back-top svg { width: 18px; height: 18px; }
+
+        /* Scroll reveal */
+        .sr { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+        .sr.visible { opacity: 1; transform: translateY(0); }
+        .sr-delay-1 { transition-delay: 0.08s; } .sr-delay-2 { transition-delay: 0.16s; } .sr-delay-3 { transition-delay: 0.24s; } .sr-delay-4 { transition-delay: 0.32s; } .sr-delay-5 { transition-delay: 0.4s; } .sr-delay-6 { transition-delay: 0.48s; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.75rem 1.5rem; font-size: 0.875rem; color: var(--text-primary); z-index: 200; opacity: 0; transition: all 0.4s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 8px 32px rgba(0,0,0,0.4); white-space: nowrap; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @media (max-width:1024px) {
+            .features-grid { grid-template-columns: repeat(2,1fr); }
+            .tools-grid { grid-template-columns: repeat(2,1fr); }
+        }
+        @media (max-width:768px) {
+            .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; background: rgba(11,17,32,0.98); backdrop-filter: blur(20px); flex-direction: column; padding: 1rem; border-bottom: 1px solid var(--border); gap: 0.25rem; }
+            .nav-links.open { display: flex; }
+            .nav-toggle { display: flex; }
+            .features-grid { grid-template-columns: 1fr; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .steps-row { grid-template-columns: 1fr; gap: 1rem; }
+            .step-connector { display: none !important; }
+            .rate-row { grid-template-columns: repeat(2,1fr); }
+            .testimonials { grid-template-columns: 1fr; }
+            .hero { padding: 8rem 0 4rem; }
+            .hero h1 { font-size: 2.25rem; }
+            .hero-stats { gap: 1.5rem; flex-direction: column; align-items: center; }
+            .hero-visual { display: none; }
+            .stat-num { font-size: 1.5rem; }
+            .btn { padding: 0.7rem 1.5rem; font-size: 0.875rem; }
+            .rate-showcase { padding: 1.5rem; }
+            .rate-item .rv { font-size: 1.75rem; }
+            .cta-inner { padding: 2rem 1.5rem; }
+            .stats-bar { grid-template-columns: repeat(2,1fr); }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .footer-links { justify-content: center; }
+            section { padding: 3.5rem 0; }
+            .trust-sep { display: none; }
+        }
+        @media (prefers-reduced-motion:reduce) {
+            .sr { transition: none; opacity: 1; transform: none; }
+            *, *::before, *::after { animation: none !important; transition-duration: 0s !important; }
+            .mouse-glow { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mouse-glow" id="mouseGlow"></div>
+    <div class="page-wrap">
+
+        <nav id="main-nav" role="navigation" aria-label="Main navigation">
+            <div class="nav-inner">
+                <a href="#" class="logo" aria-label="Meridian Mortgage home">
+                    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+                    Meridian
+                </a>
+                <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="nav-links" id="navLinks">
+            <a href="#cta" class="nav-link nav-cta">Get Consultation</a>
+                </div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="container">
+                <div class="hero-badge"><span class="pulse-dot"></span> Trusted by 50,000+ homeowners nationwide</div>
+                <h1>Mortgage Calculations<br>Built for Clarity</h1>
+                <p>See exactly where your money goes from principal to PMI to closing costs with transparent, real time numbers tailored to your loan type and state.</p>
+                <div class="hero-actions">
+                    <a href="#tools" class="btn btn-gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                        Explore the Tools
+                    </a>
+                    <a href="#cta" class="btn btn-outline">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                        Request Consultation
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="num" data-count="50000" data-suffix="+">0</div>
+                        <div class="desc">Calculations Run</div>
+                        <span class="stat-line"></span>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num" data-count="50" data-suffix="">0</div>
+                        <div class="desc">States Covered</div>
+                        <span class="stat-line" style="background:linear-gradient(90deg,transparent,var(--accent),transparent)"></span>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="num" style="color:var(--accent)" data-count="4" data-suffix="">0</div>
+                        <div class="desc">Loan Types</div>
+                        <span class="stat-line" style="background:linear-gradient(90deg,transparent,var(--accent),transparent)"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="40" y="40" width="320" height="320" rx="16" fill="none" stroke="rgba(0,168,150,0.08)" stroke-width="1"/>
+                    <rect x="60" y="60" width="280" height="280" rx="12" fill="rgba(0,168,150,0.03)"/>
+                    <line x1="60" y1="200" x2="340" y2="200" stroke="rgba(0,168,150,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+                    <line x1="100" y1="60" x2="100" y2="340" stroke="rgba(0,168,150,0.08)" stroke-width="1"/>
+                    <line x1="300" y1="60" x2="300" y2="340" stroke="rgba(0,168,150,0.08)" stroke-width="1"/>
+                    <circle cx="100" cy="200" r="4" fill="rgba(0,168,150,0.6)"/>
+                    <rect x="100" y="100" width="200" height="20" rx="4" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+                    <rect x="100" y="280" width="200" height="20" rx="4" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+                    <text x="200" y="210" text-anchor="middle" fill="rgba(237,242,247,0.3)" font-family="Inter,sans-serif" font-size="18" font-weight="800" letter-spacing="-0.02em">$0</text>
+                    <text x="200" y="240" text-anchor="middle" fill="rgba(0,168,150,0.4)" font-family="Inter,sans-serif" font-size="11" font-weight="500">MONTHLY</text>
+                    <rect x="120" y="140" width="160" height="24" rx="6" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="1.5"/>
+                    <rect x="120" y="240" width="160" height="24" rx="6" fill="rgba(201,168,76,0.08)"/>
+                </svg>
+            </div>
+        </section>
+
+        <div class="trust-bar">
+            <div class="container">
+                <div class="trust-inner">
+                    <div class="trust-item">
+                        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        <strong>256-Bit Encryption</strong>
+                    </div>
+                    <div class="trust-sep"></div>
+                    <div class="trust-item">
+                        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        <strong>Secure</strong>
+                    </div>
+                    <div class="trust-sep"></div>
+                    <div class="trust-item">
+                        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <strong>Save Time</strong>
+                    </div>
+                    <div class="trust-sep"></div>
+                    <div class="trust-item">
+                        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <strong>50,000+ Users</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section id="features">
+            <div class="container">
+                <div class="section-label"><span>Capabilities</span></div>
+                <h2 class="section-title sr">Everything You Need to Make<br>Informed Decisions</h2>
+                <p class="section-desc sr">Six precision tools designed to remove uncertainty from the home financing process — from initial payment estimation to closing cost breakdown.</p>
+                <div class="features-grid">
+                    <div class="feature-card sr sr-delay-1">
+                        <div class="feature-icon" style="background:rgba(0,168,150,0.1);color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg></div>
+                        <h3>Payment Calculator</h3>
+                        <p>Conventional, FHA, VA, Jumbo, and Refinance scenarios with real-time rate sensitivity and full amortization schedules.</p>
+                    </div>
+                    <div class="feature-card sr sr-delay-2">
+                        <div class="feature-icon" style="background:rgba(201,168,76,0.1);color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <h3>HELOC Analysis</h3>
+                        <p>Draw period vs repayment modeling with interest-only calculations and available equity tracking in real time.</p>
+                    </div>
+                    <div class="feature-card sr sr-delay-3">
+                        <div class="feature-icon" style="background:rgba(0,168,150,0.1);color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                        <h3>Reverse Mortgage / HECM</h3>
+                        <p>Principal limit factors, closing cost estimation, and net available proceeds for borrowers aged 62 and older.</p>
+                    </div>
+                    <div class="feature-card sr sr-delay-4">
+                        <div class="feature-icon" style="background:rgba(224,82,82,0.1);color:var(--danger)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        <h3>Affordability Engine</h3>
+                        <p>Front-end and back-end DTI analysis with color-coded health indicators and customizable comfort zone settings.</p>
+                    </div>
+                    <div class="feature-card sr sr-delay-5">
+                        <div class="feature-icon" style="background:rgba(201,168,76,0.1);color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+                        <h3>Side-by-Side Compare</h3>
+                        <p>Compare all loan types simultaneously — best values are highlighted automatically so the right choice is obvious.</p>
+                    </div>
+                    <div class="feature-card sr sr-delay-6">
+                        <div class="feature-icon" style="background:rgba(0,168,150,0.1);color:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
+                        <h3>State Assistance Map</h3>
+                        <p>Hover any state to reveal grants, forgivable loans, and deferred-payment programs available to first-time buyers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing">
+        <div class="container">
+            <div class="section-label"><span>Simple, Transparent Pricing</span></div>
+            <h2 class="sr">Choose the Plan That Fits Your Goals</h2>
+            <p class="section-desc">Start free, upgrade when you're ready. No hidden fees, no long-term contracts, cancel anytime.</p>
+            
+            <div class="pricing-grid">
+                <!-- Starter -->
+                <div class="pricing-card sr sr-delay-1">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <div class="pricing-price">Free<span class="pricing-period">/forever</span></div>
+                        <p class="pricing-bestfor">Best for first-time buyers</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Basic Mortgage Tools</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Advanced Tools & Dashboard</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Property Analysis</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Saved Results & Email Support</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Consultation</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Investment & Portfolio Tools</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Priority Support</li>
+                    </ul>
+                    <a href="#cta" class="btn btn-outline" style="width:100%;justify-content:center">Get Started Free</a>
+                </div>
+
+                <!-- Professional (Highlighted) -->
+                <div class="pricing-card sr sr-delay-2 featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <div class="pricing-price">$49<span class="pricing-period">/mo</span></div>
+                        <p class="pricing-bestfor">Best for single-property buyers</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Basic Mortgage Tools</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Advanced Tools & Dashboard</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Property Analysis (1 Property)</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Saved Results & Email Support</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> 1 Monthly Consultation Call</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Investment & Portfolio Tools</li>
+                        <li class="pricing-feature muted"><svg class="dash" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg> Priority Support</li>
+                    </ul>
+                    <a href="#cta" class="btn btn-gold" style="width:100%;justify-content:center">Start Professional</a>
+                </div>
+
+                <!-- Premium Investor -->
+                <div class="pricing-card sr sr-delay-3">
+                    <div class="pricing-header">
+                        <h3>Premium Investor</h3>
+                        <div class="pricing-price">$149–$299<span class="pricing-period">/mo</span></div>
+                        <p class="pricing-bestfor">Investors & multi-property buyers</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Basic Mortgage Tools</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Advanced Tools & Dashboard</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Property Analysis (Multiple Properties)</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Saved Results & Email Support</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Ongoing Consultation (3 Months)</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Investment & Portfolio Tools</li>
+                        <li class="pricing-feature"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Priority Support</li>
+                    </ul>
+                    <a href="#cta" class="btn btn-outline" style="width:100%;justify-content:center">Contact Sales</a>
+                </div>
+            </div>
+            
+            <p class="pricing-note sr sr-delay-4">All plans include 256-bit encryption, secure data handling, and access to our state assistance database. <a href="#cta" style="color:var(--accent);text-decoration:none;font-weight:500">Questions? Talk to our team →</a></p>
+        </div>
+    </section>
+
+
+        
+        <section id="how">
+            <div class="container">
+                <div class="section-label"><span>The Process</span></div>
+                <h2 class="section-title sr">Three Steps to Your Dream Home</h2>
+                <p class="section-desc sr">A streamlined approach designed to eliminate surprises at the closing table.</p>
+                <div class="steps-row sr sr-delay-1">
+                    <div class="step-connector"></div>
+                    <div class="step-card"><div class="step-num">1</div><h4>Calculate</h4><p>Select your loan type, enter your numbers, and instantly see exact monthly payments, total interest, and payoff timeline.</p></div>
+                    <div class="step-card"><div class="step-num">2</div><h4>Compare</h4><p>Run scenarios side by side to find the loan structure that fits your budget best values highlighted automatically.</p></div>
+                    <div class="step-card"><div class="step-num">3</div><h4>Consultation</h4><p>Submit your request and receive a personalized debt consolidation analysis from a licensed advisor within 24 hours.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <div class="container">
+                <div class="section-label"><span>Client Stories</span></div>
+                <h2 class="section-title sr">Real Results, Real People</h2>
+                <div class="testimonials">
+                    <div class="testimonial sr sr-delay-1">
+                        <div class="testimonial-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                        <p class="testimonial-text">"The comparison tool showed me that a conventional loan at 20% down was $240/month less than the FHA option I was considering. That's $86,400 saved over 30 years. Made the decision easy."</p>
+                        <div class="testimonial-author"><div class="testimonial-avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark))">SR</div><div><div class="testimonial-name">Sarah R.</div><div class="testimonial-role">First-Time Buyer, Austin TX</div></div></div>
+                    </div>
+                    <div class="testimonial sr sr-delay-2">
+                        <div class="testimonial-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                        <p class="testimonial-text">"The HECM calculator gave my parents a clear picture of how much equity they could access. They ended up with a reverse mortgage that eliminated their $850/month mortgage payment entirely. Life-changing."</p>
+                        <div class="testimonial-author"><div class="testimonial-avatar" style="background:linear-gradient(135deg,var(--gold-dark),var(--gold))">MK</div><div><div class="testimonial-name">Michael K.</div><div class="testimonial-role">Financial Advisor, Chicago IL</div></div></div>
+                    </div>
+                    <div class="testimonial sr sr-delay-3">
+                        <div class="testimonial-stars"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+                        <p class="testimonial-text">"I'm a self-employed contractor. The DTI analysis showed I could qualify for a jumbo loan — something I assumed I couldn't. Got approved at 7.15% without a W-2 form."</p>
+                        <div class="testimonial-author"><div class="testimonial-avatar" style="background:linear-gradient(135deg,var(--accent-dark),#1a6b60)">DW</div><div><div class="testimonial-name">David W.</div><div class="testimonial-role">Self-Employed, Denver CO</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="cta-section">
+            <div class="container">
+                <div class="cta-inner sr sr-delay-1">
+                    <div class="section-label" style="justify-content:center"><span>Ready?</span></div>
+                    <h2 class="cta-title sr">Your Dream Home Is<br>One Calculation Away</h2>
+                    <p class="cta-desc">No obligation, no hard credit pull, no hidden costs. Just clear, actionable numbers you can bring to any lender.</p>
+                    <div class="cta-actions">
+                        <a href="#cta" class="btn btn-gold" id="consolidationBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Get Consultation
+                        </a>
+                        <a href="#tools" class="btn btn-outline">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:18px;height:18px"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                            Explore the Tools
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stats">
+            <div class="container">
+                <div class="stats-bar sr sr-delay-1">
+                    <div class="stat-item"><div class="stat-num" data-count="6" data-suffix="">0</div><div class="stat-label">Loan Types</div></div>
+                    <div class="stat-item"><div class="stat-num" style="color:var(--gold)" data-count="50" data-suffix="">0</div><div class="stat-label">States Covered</div></div>
+                    <div class="stat-item"><div class="stat-num" data-count="100" data-suffix="+">0</div><div class="stat-label">Assistance Programs</div></div>
+                    <div class="stat-item"><div class="stat-num" style="color:var(--gold)" data-count="24" data-suffix="hr">0</div><div class="stat-label">Avg. Response Time</div></div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <div class="footer-inner">
+                    <a href="#" class="logo" style="font-size:0.9375rem" aria-label="Meridian Mortgage home">
+                        <div class="logo-mark" style="width:26px;height:26px"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" style="width:14px;height:14px"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+                        Meridian
+                    </a>
+                    <div class="footer-links">
+                        <a href="#tools">Tools</a>
+                        <a href="#features">Features</a>
+                        <a href="#rates">Rates</a>
+                        <a href="#testimonials">Reviews</a>
+                        <a href="#cta">Contact</a>
+                    </div>
+                    <p class="footer-copy">Calculations are for illustrative purposes only. Rates and terms subject to change.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <button class="back-top" id="backTop" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    /* Mouse glow */
+    const glow = document.getElementById('mouseGlow');
+    document.addEventListener('mousemove', e => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    }, { passive: true });
+
+    /* Scroll reveal */
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.sr').forEach(el => obs.observe(el));
+
+    /* Nav scroll */
+    const nav = document.getElementById('main-nav');
+    const backTop = document.getElementById('backTop');
+    window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+        backTop.classList.toggle('visible', window.scrollY > 600);
+    }, { passive: true });
+
+    /* Mobile nav */
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+        const open = navLinks.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    backTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    /* Number counter */
+    const countObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseFloat(el.dataset.count);
+                const suffix = el.dataset.suffix || '';
+                const duration = 2000;
+                const start = performance.now();
+                function update(now) {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.round(eased * target).toLocaleString('en-US') + suffix;
+                    if (progress < 1) requestAnimationFrame(update);
+                }
+                requestAnimationFrame(update);
+                countObs.unobserve(el);
+            }
+        });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('[data-count]').forEach(el => countObs.observe(el));
+
+    /* Rate chart */
+    const rateHistory = [
+        { m: 'Mar 24', c: 6.82, f: 6.65, v: 6.38, j: 7.45 },
+        { m: 'Apr 24', c: 6.88, f: 6.72, v: 6.42, j: 7.52 },
+        { m: 'May 24', c: 6.92, f: 6.78, v: 6.48, j: 7.58 },
+        { m: 'Jun 24', c: 6.95, f: 6.80, v: 6.50, j: 7.60 },
+        { m: 'Jul 24', c: 6.85, f: 6.72, v: 6.42, j: 7.50 },
+        { m: 'Aug 24', c: 6.78, f: 6.65, v: 6.35, j: 7.42 },
+        { m: 'Sep 24', c: 6.62, f: 6.50, v: 6.22, j: 7.28 },
+        { m: 'Oct 24', c: 6.52, f: 6.40, v: 6.12, j: 7.18 },
+        { m: 'Nov 24', c: 6.58, f: 6.45, v: 6.18, j: 7.22 },
+        { m: 'Dec 24', c: 6.55, f: 6.42, v: 6.15, j: 7.15 },
+        { m: 'Jan 25', c: 6.50, f: 6.38, v: 6.10, j: 7.10 },
+    ];
+
+    function initRateChart() {
+        const ctx = document.getElementById('rateChart');
+        if (!ctx || typeof Chart === 'undefined') return;
+        new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: rateHistory.map(d => d.m),
+                datasets: [
+                    { label: 'Conventional', data: rateHistory.map(d => d.c), borderColor: '#00A896', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, pointHoverBackgroundColor: '#00A896' },
+                    { label: 'FHA', data: rateHistory.map(d => d.f), borderColor: '#C9A84C', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, pointHoverBackgroundColor: '#C9A84C' },
+                    { label: 'VA', data: rateHistory.map(d => d.v), borderColor: '#8A9BB5', borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, borderDash: [5, 5], pointHoverBackgroundColor: '#8A9BB5' },
+                    { label: 'Jumbo', data: rateHistory.map(d => d.j), borderColor: '#E05252', borderWidth: 1.5, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, borderDash: [5, 5], pointHoverBackgroundColor: '#E05252' },
+                ],
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                interaction: { intersect: false, mode: 'index' },
+                plugins: {
+                    legend: { display: true, position: 'top', labels: { color: '#5A6D87', font: { size: 11, family: 'Inter' }, boxWidth: 14, boxHeight: 2, padding: 16 } },
+                    tooltip: { backgroundColor: '#1E2F4D', titleColor: '#EDF2F7', titleFont: { family: 'Inter', weight: '600' }, bodyColor: '#8A9BB5', bodyFont: { family: 'Inter' }, borderColor: 'rgba(0,168,150,0.2)', borderWidth: 1, cornerRadius: 8, padding: 12, callbacks: { label: c => ' ' + c.dataset.label + ': ' + c.parsed.y.toFixed(2) + '%' } }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#5A6D87', font: { size: 10, family: 'Inter' } }, border: { display: false } },
+                    y: { grid: { color: 'rgba(0,168,150,0.06)' }, ticks: { color: '#5A6D87', font: { size: 10, family: 'Inter' }, callback: v => v.toFixed(1) + '%' }, border: { display: false }, min: 5.8, max: 7.8 }
+                }
+            }
+        });
+    }
+
+    /* consultation button */
+    document.getElementById('consolidationBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        showToast('Consultation request submitted — we will contact you within 24 hours.');
+    });
+
+    document.addEventListener('DOMContentLoaded', initRateChart);
+    </script>
+</body>
+</html>
