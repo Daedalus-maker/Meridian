@@ -18,12 +18,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js">
     </script>
     <style>
-        /* Ensure logo never shows default browser link styling */
-.logo:visited, .logo:active, .logo:hover {
-    color: var(--text-primary) !important;
-    text-decoration: none !important;
-    box-shadow: none !important;
-}
         :root {
             --bg-primary: #0B1120;
             --bg-secondary: #111B2E;
@@ -149,6 +143,13 @@
             font-size: 1.125rem;
             letter-spacing: -0.02em
         }
+                /* Ensure logo never shows default browser link styling */
+.logo:visited, .logo:active, .logo:hover {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+}
+
         .logo-mark {
             width: 32px;
             height: 32px;
@@ -1379,14 +1380,10 @@
         <div id="toast-container" aria-live="polite"></div>
         <header>
             <div class="container">
-                <a href="index.html" class="logo" style="text-decoration:none; color:var(--text-primary); opacity:0; animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .1s forwards;">
-    <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>
-        </svg>
-    </div>
-    Meridian
-</a>
+                <a href="index.html" class="logo" aria-label="Meridian Mortgage home">
+                    <div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+                    Meridian
+                </a>
                     
                     <div class="nav-links">
                         <a href="#rates" class="nav-link">Rates</a>
