@@ -135,6 +135,33 @@
             align-items: center;
             justify-content: space-between
         }
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(11,17,32,0.7);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        nav.scrolled { background: rgba(11,17,32,0.95); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1.5rem; max-width: 1200px; margin: 0 auto; height: 64px; }
+        .logo { display: flex; align-items: center; gap: 0.625rem; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text-primary); }
+        .logo-mark { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s; }
+        .logo:hover .logo-mark { transform: rotate(-6deg) scale(1.05); }
+        .logo-mark svg { width: 18px; height: 18px; }
+        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-link { padding: 0.5rem 0.875rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius-xs); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+        .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .nav-cta { background: linear-gradient(135deg, var(--gold-dark), var(--gold)) !important; color: #0B1120 !important; font-weight: 600; box-shadow: 0 2px 12px rgba(201,168,76,0.2); }
+        .nav-cta:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important; box-shadow: 0 4px 20px rgba(201,168,76,0.35) !important; transform: translateY(-1px); color: #0B1120 !important; }
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 0.4rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .nav-toggle:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-toggle svg { width: 22px; height: 22px; }
+ 
+        /* Nav */
+        
+        
         .logo {
             display: flex;
             align-items: center;
@@ -143,13 +170,7 @@
             font-size: 1.125rem;
             letter-spacing: -0.02em
         }
-                /* Ensure logo never shows default browser link styling */
-.logo:visited, .logo:active, .logo:hover {
-    color: var(--text-primary) !important;
-    text-decoration: none !important;
-    box-shadow: none !important;
-}
-
+               
         .logo-mark {
             width: 32px;
             height: 32px;
