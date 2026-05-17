@@ -130,33 +130,56 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px)
         }
-        /* HEADER & NAVIGATION (FIXED + MOBILE) */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(11, 17, 32, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0.85rem 0;
-            transition: all 0.2s;
-        }
         .nav-inner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
+            justify-content: flex-start; gap: 2rem;
+            gap: 1.5rem; /* Controls minimum spacing instead of extreme edge-pushing */
+            padding: 0.875rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 64px;
+            flex-wrap: nowrap; /* Forces everything to stay on one line */
         }
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(11,17,32,0.7);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        nav.scrolled { background: rgba(11,17,32,0.95); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1.5rem; max-width: 1200px; margin: 0 auto; height: 64px; }
+        .logo { display: flex; align-items: center; gap: 0.625rem; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text-primary); }
+        .logo-mark { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s; }
+        .logo:hover .logo-mark { transform: rotate(-6deg) scale(1.05); }
+        .logo-mark svg { width: 18px; height: 18px; }
+        .nav-links { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-link { padding: 0.5rem 0.875rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); border-radius: var(--radius-xs); cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+        .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .nav-cta { background: linear-gradient(135deg, var(--gold-dark), var(--gold)) !important; color: #0B1120 !important; font-weight: 600; box-shadow: 0 2px 12px rgba(201,168,76,0.2); }
+        .nav-cta:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important; box-shadow: 0 4px 20px rgba(201,168,76,0.35) !important; transform: translateY(-1px); color: #0B1120 !important; }
+        .nav-toggle { display: none; background: none; border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 0.4rem; cursor: pointer; color: var(--text-secondary); transition: all 0.2s; }
+        .nav-toggle:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .nav-toggle svg { width: 22px; height: 22px; }
+ 
+        /* Nav */
         .logo {
-            display: flex;
-            align-items: center;
-            gap: .625rem;
-            font-weight: 700;
-            font-size: 1.125rem;
-            letter-spacing: -0.02em;
-            white-space: nowrap;
-        }
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0; /* Prevents logo from compressing on smaller screens */
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+        
+
+               
         .logo-mark {
             width: 32px;
             height: 32px;
@@ -164,36 +187,30 @@
             border-radius: 8px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center
         }
-        .logo-mark svg { width: 18px; height: 18px; }
-        
-        /* Desktop navigation */
+        .logo-mark svg {
+            width: 18px;
+            height: 18px
+        }
         .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s;
-        }
+    display: flex;
+    gap: 0.5rem; /* Increased from 0.25rem for better link balance */
+    align-items: center;
+    flex-wrap: nowrap; /* Keeps nav links grouped together */
+}
+
         .nav-link {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            border-radius: var(--radius-xs);
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        .nav-link:hover { color: var(--text-primary); background: var(--bg-tertiary); }
-        .nav-link.active { background: rgba(0, 168, 150, 0.12); color: var(--accent); font-weight: 600; }
-        .nav-cta {
-            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-            color: #0B1120;
-            font-weight: 700;
-        }
-        .nav-cta:hover { background: linear-gradient(135deg, var(--gold), var(--gold-light)); box-shadow: 0 4px 16px rgba(201, 168, 76, 0.25); transform: translateY(-1px); }
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap; /* Prevents link text from breaking */
+}
         .nav-link:hover {
             color: var(--text-primary);
             background: var(--bg-tertiary)
