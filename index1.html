@@ -133,7 +133,13 @@
         .nav-inner {
             display: flex;
             align-items: center;
-            justify-content: space-between
+            justify-content: space-between;
+            gap: 1.5rem; /* Controls minimum spacing instead of extreme edge-pushing */
+            padding: 0.875rem 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 64px;
+            flex-wrap: nowrap; /* Forces everything to stay on one line */
         }
         /* Nav */
         nav {
@@ -162,14 +168,7 @@
         /* Nav */
         
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: .625rem;
-            font-weight: 700;
-            font-size: 1.125rem;
-            letter-spacing: -0.02em
-        }
+
                
         .logo-mark {
             width: 32px;
